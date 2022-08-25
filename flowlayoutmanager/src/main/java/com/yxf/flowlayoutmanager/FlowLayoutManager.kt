@@ -1,0 +1,66 @@
+package com.yxf.flowlayoutmanager
+
+import android.graphics.Rect
+import android.util.Log
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+
+class FlowLayoutManager: RecyclerView.LayoutManager() {
+
+    override fun generateDefaultLayoutParams(): RecyclerView.LayoutParams {
+        return RecyclerView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+    }
+
+    override fun onLayoutChildren(recycler: RecyclerView.Recycler, state: RecyclerView.State) {
+        if (itemCount <= 0) {
+            return
+        }
+        if (state.isPreLayout) {
+            return
+        }
+        detachAndScrapAttachedViews(recycler)
+
+        var offsetX = paddingLeft
+        var offsetY = paddingTop
+
+        for (i in 0 until itemCount) {
+            val view = recycler.getViewForPosition(i)
+            addView(view)
+            measureChildWithMargins(view, 0, 0)
+            val w = getDecoratedMeasuredWidth(view)
+            val h = getDecoratedMeasuredHeight(view)
+            Log.d("Debug", "view w: $w, h: $h")
+            if (offsetX + w > width - paddingRight) {
+                offsetX = paddingLeft
+                offsetY += h
+            }
+            layoutDecorated(view, offsetX, offsetY, offsetX + w, offsetY + h)
+            offsetX += w
+            Log.d("Debug", "offsetX: $offsetX, offsetY: $offsetY")
+        }
+
+    }
+
+    override fun isAutoMeasureEnabled(): Boolean {
+        return true
+    }
+
+    override fun setMeasuredDimension(childrenBounds: Rect?, wSpec: Int, hSpec: Int) {
+        super.setMeasuredDimension(childrenBounds, wSpec, hSpec)
+
+        val width: Int
+        val height: Int
+        val horizontalPadding = paddingLeft + paddingRight
+        val verticalPadding = paddingTop + paddingBottom
+
+        val usedHeight = childrenBounds!!.height() + verticalPadding
+        val usedWidth = childrenBounds!!.width() + horizontalPadding
+        height = chooseSize(hSpec, usedHeight, minimumHeight)
+        width = chooseSize(wSpec, usedWidth, minimumWidth)
+        setMeasuredDimension(width, height)
+
+    }
+
+
+
+}
