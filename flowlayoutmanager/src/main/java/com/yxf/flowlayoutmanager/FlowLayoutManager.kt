@@ -5,7 +5,7 @@ import android.util.Log
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
-class FlowLayoutManager: RecyclerView.LayoutManager() {
+class FlowLayoutManager : RecyclerView.LayoutManager() {
 
     override fun generateDefaultLayoutParams(): RecyclerView.LayoutParams {
         return RecyclerView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -27,14 +27,15 @@ class FlowLayoutManager: RecyclerView.LayoutManager() {
             val view = recycler.getViewForPosition(i)
             addView(view)
             measureChildWithMargins(view, 0, 0)
-            val w = getDecoratedMeasuredWidth(view)
-            val h = getDecoratedMeasuredHeight(view)
+            val lp = view.layoutParams as RecyclerView.LayoutParams
+            val w = getDecoratedMeasuredWidth(view) + lp.leftMargin + lp.rightMargin
+            val h = getDecoratedMeasuredHeight(view) + lp.topMargin + lp.bottomMargin
             Log.d("Debug", "view w: $w, h: $h")
             if (offsetX + w > width - paddingRight) {
                 offsetX = paddingLeft
                 offsetY += h
             }
-            layoutDecorated(view, offsetX, offsetY, offsetX + w, offsetY + h)
+            layoutDecoratedWithMargins(view, offsetX, offsetY, offsetX + w, offsetY + h)
             offsetX += w
             Log.d("Debug", "offsetX: $offsetX, offsetY: $offsetY")
         }
@@ -60,7 +61,6 @@ class FlowLayoutManager: RecyclerView.LayoutManager() {
         setMeasuredDimension(width, height)
 
     }
-
 
 
 }
