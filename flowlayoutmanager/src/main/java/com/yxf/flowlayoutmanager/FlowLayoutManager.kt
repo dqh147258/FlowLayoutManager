@@ -12,15 +12,13 @@ class FlowLayoutManager : RecyclerView.LayoutManager() {
     }
 
     override fun onLayoutChildren(recycler: RecyclerView.Recycler, state: RecyclerView.State) {
-        if (itemCount <= 0) {
-            recycler.clear()
-            return
-        }
         if (state.isPreLayout) {
             return
         }
         detachAndScrapAttachedViews(recycler)
-
+        if (itemCount <= 0) {
+            return
+        }
         var offsetX = paddingLeft
         var offsetY = paddingTop
 

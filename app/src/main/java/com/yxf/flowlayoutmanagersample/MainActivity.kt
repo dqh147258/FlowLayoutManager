@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
 
     private val vb by lazy { ActivityMainBinding.inflate(LayoutInflater.from(this)) }
 
-    private val valueList = listOf<String>(
+    private val valueList = arrayListOf<String>(
         "测试", "测试测试", "测试测试测试测试", "测试测试", "测试测试测试测试测试测试测试测试",
         "测试", "测试试", "试测试测试", "测试测试", "测试测试测试测试试测试", "测试", "测试测试", "测试测试测试", "测试测试", "测试测试测试测试测试测试",
         "测试测试测试测试试测试", "测试", "测试测试", "测试测试测试", "测试测试",
@@ -47,6 +47,10 @@ class MainActivity : AppCompatActivity() {
 
             }
             layoutManager = FlowLayoutManager()
+        }
+        vb.remove.setOnClickListener {
+            valueList.removeLastOrNull()
+            vb.recyclerView.adapter?.notifyDataSetChanged()
         }
 
 
